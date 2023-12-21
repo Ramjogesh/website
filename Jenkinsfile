@@ -11,11 +11,6 @@ pipeline {
         }
         
         stage('Build and Publish') {
-            when {
-                expression {
-                    return env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop'
-                }
-            }
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
