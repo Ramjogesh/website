@@ -11,4 +11,3 @@ EXPOSE 82
 
 
 CMD ["apache2ctl", "-D", "FOREGROUND"]
-
