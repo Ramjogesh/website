@@ -1,20 +1,10 @@
 pipeline {
     agent any
     
-    stages {
-        stage('Git Checkout') {
-            steps {
-                script {
-                    // Checkout the code from the repository
-                    git credentialsId: 'Git-Credentials' git branch: 'master', url: 'https://github.com/Ramjogesh/website.git'
-                }
-            }
-        }
-        
+    stages {       
         stage('Build Docker Image') {
             steps {
                 script {
-
                     sh 'docker build . -t mywebsite:latest'
                 }
             }
