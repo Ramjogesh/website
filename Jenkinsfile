@@ -15,7 +15,7 @@ pipeline {
                 script {
                     if (env.BRANCH_NAME == 'master') {
                         // Build and publish website on port 82
-                        sh 'docker run -itd -v /var/www/html:/var/www/html -p 82:80 mywebsite:latest'
+                        sh 'docker run -itd -p 82:80 mywebsite:latest'
                     } else if (env.BRANCH_NAME == 'develop') {
                         // Only build the product without publishing
                         sh 'docker run -v /var/www/html:/var/www/html mywebsite:latest'
