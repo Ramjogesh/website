@@ -1,27 +1,35 @@
 pipeline {
     agent any
-    
-    stages {       
+
+    stages {
+        stage('Pull from Git') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[credentialsId: 'Git-Credentials', url: 'https://github.com/Ramjogesh/website.git']]])
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build . -t mywebsite:latest'
+                    // Build docker image and save reference to dockerImage
+                    dockerImage = docker.build("ramjogesh/mywebsite:${BUILD_NUMBER}", ".")
+                    dockerImage.inside {
+                        // Any additional steps inside the Docker container if needed
+                    }
                 }
             }
         }
-        
-        stage('Build and Publish') {
+
+        stage('Push to Docker Hub') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'master') {
-                        // Build and publish website on port 82
-                        sh 'docker run -itd -p 82:80 mywebsite:latest'
-                    } else if (env.BRANCH_NAME == 'develop') {
-                        // Only build the product without publishing
-                        sh 'docker run -v /var/www/html:/var/www/html mywebsite:latest'
+                    // Push the built image to Docker Hub
+                    withDockerRegistry(credentialsId: 'Docker-Credential', url: 'https://index.docker.io/v1/') {
+                        dockerImage.push()
                     }
                 }
             }
         }
     }
 }
+
